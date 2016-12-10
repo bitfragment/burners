@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        #display {
+            height: 96pt;
+            margin: auto;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            text-align: center;
+            font-size: 96pt;
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        var choices = ['noumenon', 'phenomenon'];
+        var rnd = function(max) {
+            return Math.floor(Math.random() * (max + 1));
+        };
+        var choose = function(choices) {
+            return choices[rnd(choices.length - 1)];
+        };
+        var change = function(id, choices) {
+            document.getElementById(id).innerHTML = choose(choices);
+        }
+        var init = function() {
+            var display = document.createElement('div');
+            display.setAttribute('id', 'display');
+            document.body.appendChild(display);
+            change('display', choices);
+            setInterval(function() {
+                change('display', choices);
+            }, 750);
+        };
+        init();
+    </script>
+</body>
+</html>

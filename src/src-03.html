@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title></title>
+<style>html, body {margin: 0;} canvas {display: block;}</style>
+</head>
+<body>
+<div><canvas id="canvas"></canvas></div>
+
+<script id="src">
+const chaos = (() => {
+    return {
+        init: function() {
+            this.canvas = document.getElementById("canvas");
+            this.context = this.canvas.getContext("2d");
+            this.setSize(window.innerWidth, window.innerHeight);
+        },
+        setSize: function(width, height) {
+            this.width = this.canvas.width = width;
+            this.height = this.canvas.height = height;
+        },
+        clear: function(color) {
+            if (color) {
+                this.context.fillStyle = color;
+                this.context.fillRect(0, 0, this.width, this.height);
+            } else {
+                this.context.clearRect(0, 0, this.width, this.height);
+            }
+        },
+        popImage: function() {
+            let win = window.open("", "Canvas Image"),
+                src = this.canvas.toDataURL("image/png");
+            win.document.write(`<img src="${src}" width="${this.width}" height="${this.height}">`);
+        }
+    }
+})();
+
+
+window.addEventListener('load', () => {
+    let maxDepth = 7,
+        numShapes = 3,
+        angles = [
+            Math.random() * Math.PI * 2,
+            Math.random() * Math.PI * 2,
+            Math.random() * Math.PI * 2
+        ],
+        size = 0,
+        dist = 0,
+        scaleFactor = 0.8;
+
+    const init = () => {
+        chaos.init();
+        size = chaos.height / 10;
+        dist = [
+            size * Math.random() * 3 + 1,
+            size * Math.random() * 3 + 1,
+            size * Math.random() * 3 + 1
+        ];
+        draw();
+        document.body.addEventListener('keyup', event => {
+            switch(event.keyCode) {
+                case 13: // return
+                // case 32: // space
+                    maxDepth += 1;
+                    draw();
+                    break;
+                case 80: // p
+                    chaos.popImage();
+                    break;
+                default:
+                    break;
+            }
+        });
+    };
+
+
+    const draw = () => {
+        chaos.clear();
+        chaos.context.save();
+        chaos.context.translate(chaos.width * 0.5, chaos.height * 0.5);
+        drawShape();
+        iterate(maxDepth);
+        chaos.context.restore();
+    };
+
+
+    const iterate = depth => {
+        for (let i = 0; i < numShapes; i++) {
+          chaos.context.save();
+          chaos.context.rotate(angles[i]);
+          // chaos.context.rotate(angles[i] + Math.random() - 0.1);
+          chaos.context.translate(dist[i], 0);
+          // chaos.context.translate(dist[i] * (Math.random() * 0.25 + 0.25), 0);
+          chaos.context.scale(scaleFactor, scaleFactor);
+          drawShape();
+          if (depth > 0) iterate(depth - 1);
+          chaos.context.restore();
+        }
+    };
+
+
+    const chooseLetter = () => {
+        let t = document.getElementById("src").innerText,
+            l = t.length;
+        return t[Math.floor(Math.random() * l)];
+    };
+
+
+    // const drawShape = () => {
+    const drawShape = (depth) => { // for color
+        chaos.context.fillStyle = "rgba(0, 0, 0, 0.5)";
+        chaos.context.font = '72px Arial';
+        let letter = chooseLetter();
+        chaos.context.fillText(letter, 0, 0);
+    };
+
+
+    init();
+
+});
+</script>
+</body>
+</html>

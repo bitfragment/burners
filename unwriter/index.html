@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+        }
+
+        .keyboard {
+            margin-top: 15rem;
+        }
+
+        .keyboardRow {
+            display: flex;
+            flex: 1;
+            min-height: 2vh;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .key {
+            border: 1px dotted white;
+            border-radius: 1px;
+            margin: 1rem;
+            font-size: 1.5rem;
+            padding: 1rem .5rem;
+            width: 50px;
+            text-align: center;
+        }
+
+        kbd {
+            display: block;
+            font-size: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <audio id="typewriter" src="typewriter-key.mp3"></audio>
+
+    <script>
+        const init = () => {
+
+            let unwriter = document.createDocumentFragment(),
+                keyboard = document.createElement('div'),
+                qwerty = [
+                    [81, 87, 69, 82, 84, 89, 85, 73, 79, 80],
+                    [65, 83, 68, 70, 71, 72, 74, 75, 76],
+                    [90, 88, 67, 86, 66, 78, 77]
+                ],
+                pressed = [],
+                audio = document.getElementById('typewriter');
+
+            keyboard.classList.add('keyboard');
+
+            for (let row of qwerty) {
+                let keyboardRow = document.createElement('div');
+                keyboardRow.classList.add('keyboardRow');
+
+                for (let char of row) {
+                    let key = document.createElement('div');
+                    key.classList.add('key');
+                    key.setAttribute('data-key', char);
+
+                    let letter = document.createElement('kbd');
+                    letter.innerHTML = String.fromCharCode(char);
+
+                    key.appendChild(letter);
+                    keyboardRow.appendChild(key);
+                    keyboard.appendChild(keyboardRow);
+                }
+            }
+
+            unwriter.appendChild(keyboard);
+            document.body.appendChild(unwriter);
+
+            function unwrite(e) {
+                let kcode = e.keyCode;
+                if (kcode >= 65 && kcode <= 90 &&
+                    !pressed.includes(kcode)) {
+                    let key = document.querySelector(`div[data-key='${kcode}']`);
+                    audio.currentTime = 0;
+                    audio.play();
+                    key.style.visibility = 'hidden';
+                    pressed.push(kcode);
+                }
+            }
+
+            window.addEventListener('keydown', unwrite);
+
+        }; // init()
+
+
+        window.addEventListener('load', init);
+
+    </script>
+
+
+</body>
+
+</html>

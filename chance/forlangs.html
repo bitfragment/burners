@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>forlangs</title>
+    <style>
+        body {
+            margin: 2em;
+            background: #0080FF;
+            color: #66CCFF;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+
+    var t  = "What to us had been a simple — perfectly simple and obvious — "   +
+             "substitution of bit patterns, to management we'd moved into the "   +
+             "whole world of foreign languages, which was obviously impossible. "   +
+             "That dangerous, dangerous point of something that's obvious, evident "  +
+             "to the researcher, to the programmer — when it's faced by Management, "   +
+             "is out of this world. It was nothing but a substitution of bit patterns, "  +
+             "yet to management it was a move into all the foreign languages. [...] "    +
+             "Now, of course, I still think we can go too far, and I would point out " +
+             "one thing about that language that implemented FLOW-MATIC: the fact "  +
+             "that we could substitute those French and English words means that " +
+             "it was never anything but a code. It was not a language. Because " +
+             "the fact that we could take the words of those statements and "  +
+             "substitute French words, German words, or anything else, meant "  +
+             "that it was not a true language. It was actually a code.",
+
+        tl = t.length;
+
+    // Create new array including charCode for each element of string `t`
+    for (var i = 0, a = []; i < tl; i++) {
+        a.push(t.charCodeAt(i));
+    }
+
+    // Convert from decimal to hex
+    var b = a.map(function(charCode) {
+        return charCode.toString(16);
+    });
+
+    // Zero-pad each charCode up to six digits and add hash symbol
+    var c = b.map(function(charCode) {
+        return "#" + Array(Math.max(6 - String(charCode).length + 1, 0)).join(0) + charCode;
+    });
+
+    window.onload = function() {
+        var div = document.createElement("div"),
+            frg = document.createDocumentFragment(),
+            out = "";
+
+        for (var i = 0; i < tl; i++) {
+            var l = document.createElement("span");
+
+            l.innerHTML             = t[i];
+            l.style.backgroundColor = c[i];
+            l.style.fontSize        = Math.random() * (a[i] % 10) + "em";
+            l.style.letterSpacing   = Math.random() * (1 - (a[i] % 10)) + "em";
+
+            frg.appendChild(l);
+        }
+
+        div.style.width = (Math.random() * 90) + "%";
+        div.style.margin = "0 auto 0 auto";
+
+        div.appendChild(frg);
+        document.body.appendChild(div);
+    };
+
+</script>
+
+</body>
+</html>

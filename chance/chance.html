@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        body {
+            margin      : 2em;
+            background  : #000;
+            font-family : monospace;
+        }
+        .chr {
+            position    : absolute;
+            text-shadow : 3px 3px 3px black;
+        }
+    </style>
+</head>
+<body>
+
+<script src="zz-chance.min.js"></script>
+
+<script>
+
+    window.onload = function() {
+        var div = document.createElement("div"),
+            chr = document.createElement("span"),
+            frg = document.createDocumentFragment(),
+            chances = chance.integer({min:10, max: 20});
+
+        for (var i = 0; i < chances; i++) {
+            var l                 = document.createElement("div");
+            l.innerHTML           = chance.paragraph();
+            l.style.fontSize      = chance.floating({min: 1, max: 2}) + "em";
+            l.style.color         = chance.color({grayscale: true});
+            l.style.letterSpacing = chance.floating({min: -0.5, max: 1  }) + "em";
+            l.style.lineHeight    = chance.floating({min:  0,   max: 0.5}) + "em";
+            frg.appendChild(l);
+        }
+
+        chr.setAttribute("class", "chr");
+        chr.innerHTML       = chance.character();
+        chr.style.color     = chance.color();
+        chr.style.fontSize  = chance.floating({min: 10, max: 25}) + "em";
+        chr.style.top       = chance.integer({min: 10, max: 50}) + "%";
+        chr.style.transform = "rotate(" + chance.floating({min: 0, max: 100}) + "turn)";
+        frg.appendChild(chr);
+
+        div.style.width  = chance.integer({min: 10, max: 90}) + "%";
+        div.style.margin = "0 auto 0 auto";
+
+        div.appendChild(frg);
+        document.body.appendChild(div);
+    };
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        html {
+            background-color: black;
+        }
+        #display {
+            height: 75%;
+            width: 75%;
+            margin: auto;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            font-size: 1.10em;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        var doc = document.documentElement.outerHTML,
+            display = document.createElement('display'),
+            pre = document.createElement('pre'),
+            code = document.createElement('code');
+        display.setAttribute('id', 'display');
+        code.innerText = doc;
+        pre.appendChild(code);
+        display.appendChild(pre);
+        document.body.appendChild(display);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title></title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.23/p5.min.js"></script>
+</head>
+<body>
+<script id="src">
+let code = document.getElementById("src").innerText;
+
+let src = code.split('').filter(elt => elt !== ' ');
+
+let len = src.length;
+
+let particles;
+
+function setup() {
+    createCanvas(window.innerWidth, window.innerHeight);
+    particles = src.map(elt => new Particle(
+        Math.floor(Math.random() * 500),
+        Math.floor(Math.random() * 500),
+        elt,
+        Math.floor(Math.random() * 5)
+    ));
+}
+
+function draw() {
+    background(255);
+    textSize(16);
+    fill(100);
+    textFont("Monospace");
+    text(code, 5, 5);
+    let wind = createVector(0.1, 0);
+    for (let i = 0; i < len; i++) {
+        let gravity = createVector(0, 0.2 * particles[i].mass);
+        particles[i].applyForce(gravity);
+        particles[i].applyForce(wind);
+        particles[i].update();
+        particles[i].edges();
+        particles[i].display();
+    }
+}
+
+function Particle(x, y, letter, mass) {
+    this.letter = letter;
+    this.mass = mass;
+
+    this.pos = createVector(x, y);
+    this.vel = createVector(0, 0);
+    this.acc = createVector(0, 0);
+
+    this.applyForce = function(force) {
+        let f = force.copy();
+        f.div(this.mass);
+        this.acc.add(f);
+    };
+
+    this.update = function() {
+        this.vel.add(this.acc);
+        this.pos.add(this.vel);
+        this.acc.set(0, 0);
+         this.vel.mult(0.99);
+    };
+
+    this.display = function() {
+        textSize(this.mass * 8);
+        fill(25);
+        text(this.letter, this.pos.x, this.pos.y);
+    };
+
+    this.edges = function() {
+        if (this.pos.y > height) {
+            this.vel.y *= -1;
+            this.pos.y = height;
+        }
+        if (this.pos.x > width) {
+            this.vel.x *= -1;
+            this.pos.x = width;
+        }
+    };
+}
+</script>
+</body>
+</html>

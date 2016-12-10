@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>the field</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <style>
+    body {
+        margin: 1em;
+        padding: 1em;
+        font-size: 100%;
+        line-height: 1.5;
+    }
+    #lecture {
+        color: red;
+    }
+    </style>
+</head>
+
+<body>
+    <script src="thefield.js"></script>
+
+    <script>
+    window.onload = function() {
+        var ignite = document.getElementById("ignition");
+        ignite.onclick = fielder;
+    };
+    </script>
+
+    <h1>the field</h1>
+
+    <p>scholarly dialogue / class act in one voice</p>
+
+    <form>
+        <input type="button" id="ignition" class="pure-button" value="begin, end">
+    </form>
+
+    <h1 id="lecture"></h1>
+    <h1 id="article"></h1>
+
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <title>Definitionator</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <style>
+        body {margin: 1em; padding: 1em; font-size: 100%; line-height: 1.5;}
+    </style>
+</head>
+<body>
+
+<em><span id="num"></span>The digital humanities are <strong><span id="sluice"></span></strong></em></span>
+
+<form>
+    <input type="button" id="button" value="Define again!" class="pure-button">
+</form>
+
+<script>
+
+var counter = 0,
+     group1 = ["nice", "wonderful", "amazing"],
+     group2 = ["new", "innovative", "non-traditional"],
+     group3 = ["public", "open", "collaborative", "disruptive", "D.I.Y"],
+     group4 = ["quantitative", "computational", "big", "surface",
+               "distant"],
+     group5 = ["collaboration", "method", "methodology", "data",
+               "numbers", "arithmetic", "visualization", "coding",
+               "making", "building"],
+     groups = [group1, group2, group3, group4, group5];
+
+
+function rndsel(group) {
+    return Math.floor(Math.random() * group.length);
+}
+
+
+function generator(groups) {
+    var output = "";
+    for (var i = 0, len = groups.length; i < len; i ++) {
+        group = groups[i];
+        sel = group[rndsel(group)];
+        output += sel + " ";
+        }
+    output += "humanities!";
+    return output;
+}
+
+
+function writer() {
+    var def = generator(groups);
+    sluice.innerHTML = def;
+    counter++;
+    num.innerHTML = counter + ". ";
+    num.style.display = "inline";
+    if (button.value === "Define again!" && counter > 9) {
+        button.value = "Keep going!";
+    }
+    if ( (counter > 9) && (counter % rndsel(groups) === 0) ) {
+        undefinitionator();
+    }
+}
+
+
+function undefinitionator() {
+    var undGroup = groups[rndsel(groups)];
+    undGroup.length = 0; // empty the array
+
+    // Create new array containing all arrays in 'groups'
+    // that haven't been emptied yet
+    var defgroups = groups.filter(function(value) {
+        return value.length !== 0;
+    });
+
+     // If 'defgroups' array is empty, write final output
+    if (defgroups.length === 0) {
+        writer();
+        button.value = "Game over!";
+        button.disabled = true;
+    }
+}
+
+
+window.onload = function() {
+    var button = document.getElementById("button"),
+        num    = document.getElementById("num");
+        sluice = document.getElementById("sluice");
+
+    writer();
+    num.style.display = "none"; // don't display first def number
+    button.onclick = writer;
+};
+
+</script>
+
+</body>
+</html>

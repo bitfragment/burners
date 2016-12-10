@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title> digital </title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <style>
+    body {
+        margin: 1em;
+        padding: 1em;
+        font-size: 100%;
+        line-height: 1.5;
+    }
+    .tinted {
+        color: red;
+    }
+    </style>
+</head>
+
+<body>
+
+    <h1>digital</h1>
+    <p>scholarly dialogue / class act in one voice</p>
+    <form>
+        <input type="button" id="ignition" class="pure-button" value="begin, end">
+    </form>
+    <h1 id="lecture" class="tinted"></h1>
+    <h1 id="article"></h1>
+
+    <script>
+    function barkAtTheMoon() {
+        "use strict";
+        var team,
+            flip = function() {
+                return Math.floor(Math.random() * 2);
+            };
+        team = (flip() === 0) ? "us" : "them";
+        return team;
+    }
+
+    function barkLikeAScholar(team) {
+        "use strict";
+        var asserts, digitude, arg, emphs = [".", "!"];
+        asserts = (team === "us") ? ["I'm ", "we're "] : ["you're ", "they're "];
+        digitude = (team === "us") ? "digital" : "not digital";
+        arg = asserts[Math.floor(Math.random() * asserts.length)];
+        arg += digitude;
+        arg += emphs[Math.floor(Math.random() * emphs.length)];
+        return arg;
+    }
+
+    function barkInTheBrowser(bark, aperture, voice, lang, rate, pitch, timeout, record, transcript) {
+        "use strict";
+        var odio = new SpeechSynthesisUtterance(bark);
+        odio.voice = voice;
+        odio.lang = lang;
+        odio.rate = rate;
+        odio.pitch = pitch;
+        setTimeout(function() {
+            aperture.innerHTML   = bark;
+            transcript.innerHTML = record;
+            window.speechSynthesis.speak(odio);
+        }, timeout);
+    }
+
+    window.onload = function() {
+        "use strict";
+        document.getElementById("ignition").onclick = function() {
+            var c, scholar, bark, barking = [],
+                aperture   = document.getElementById("lecture"),
+                transcript = document.getElementById("article"),
+                record = "",
+                timeout = 0,
+                voice = window.speechSynthesis.getVoices().filter(function(voice) {
+                    return voice.name === "Alex";
+                })[0],
+                lang = "en",
+                rate = 1.75,
+                pitch;
+
+            // Create array of barks
+            for (scholar = 0; scholar < 100; scholar += 1) {
+                barking.push(barkLikeAScholar(barkAtTheMoon()));
+            }
+
+            // Barkerate
+            for (c = 0; c < barking.length; c += 1) {
+                bark = barking[c];
+                pitch = Math.random() * 2;
+                record  += bark + " ";
+                barkInTheBrowser(bark, aperture, voice, lang, rate, pitch, timeout, record, transcript);
+                timeout = 1000 + (1000 * c);
+            }
+
+        };
+    };
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.23/p5.min.js"></script>
+    <style>
+        #currentSort {
+            font-family: monospace;
+            font-size: 150%;
+        }
+    </style>
+</head>
+
+<body>
+    <p><div id="currentSort"></div></p>
+
+    <script>
+    var r = 12, // total number and max value of values to generate
+        a = ns(r),
+        _sorts = insertionSort(a),
+        sorts = makeIterator(_sorts);
+
+    var z = r,
+        x = z * 2,
+        y1 = (z * 2) * z;
+
+    var sortElt = document.getElementById("currentSort"),
+        consoleElt = document.getElementById("console");
+
+    // generate n numbers of range 1-n
+    function ns(n) {
+        let a = [], x = n;
+        while (n--) {
+            a.push(Math.floor(Math.random() * ((x + 1) - 1) + 1));
+        }
+        return a;
+    }
+
+    function setup() {
+        createCanvas((z * 2) * z + (z * 2), (z * 2) * z + (z * 2));
+        frameRate(10);
+        stroke(255);
+        drawA(a, z, x, y1);
+        noLoop();
+        setTimeout(function() {
+            stroke(255, 0, 0);
+            loop();
+        }, 2000);
+    }
+
+    function insertionSort(a) {
+        var b = a.slice(),
+            sorts = [b],
+            i, j, key, l = a.length;
+        for (j = 1; j < l; j++) {
+            key = a[j];
+            i = j - 1;
+            while (i >= 0 && a[i] > key) {
+                a[i + 1] = a[i];
+                b = a.slice();
+                sorts.push(b)
+                i--;
+            }
+            a[i + 1] = key;
+        }
+        b = a.slice();
+        sorts.push(b);
+        return sorts;
+    }
+
+    function makeIterator(a) {
+        var nextIndex = 0,
+            nextSort,
+            len = a.length;
+        return {
+            next: function() {
+                if (nextIndex + 1 === len) {
+                    stroke(125);
+                    noLoop();
+                    setTimeout(function() {
+                        loop();
+                    }, 2000);
+                }
+                if (nextIndex < len) {
+                    nextSort = a[nextIndex++];
+                    sortElt.innerHTML = nextSort;
+                    return nextSort;
+                } else {
+                    console.log("------------------------------");
+                    stroke(255);
+                    noLoop();
+                    setTimeout(function() {
+                        loop();
+                    }, 2000);
+                    nextIndex = 0;
+                    nextSort = a[nextIndex];
+                    sortElt.innerHTML = nextSort;
+                    return nextSort;
+                }
+            }
+        }
+    }
+
+    function drawNumber(n, interval, x, y) {
+        while (n > 0) {
+            strokeWeight(interval);
+            point(x, y);
+            y -= interval * 2;
+            n--;
+        }
+    }
+
+    function drawA(a, z, x, y1) {
+        background(0);
+        for (elt of a) {
+            drawNumber(elt, z, x, y1);
+            x += z * 2;
+        }
+    }
+
+    function draw() {
+        next = sorts.next();
+        console.log(next);
+        drawA(next, z, x, y1);
+    }
+    </script>
+</body>
+
+</html>
