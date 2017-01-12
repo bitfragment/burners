@@ -1,0 +1,47 @@
+<script id="src">
+
+const randChar = () => {
+    let t = document.getElementById("src").innerText,
+        l = t.length,
+        c = t[Math.floor(Math.random() * l)];
+    return !['\n', ' '].includes(c) ? c : randChar();
+};
+
+
+const noise = (lines, cols, fuzz1, fuzz2) => {
+    let flip = s => s === fuzz2 ? fuzz1 : fuzz2,
+        noisebox = [],
+        line, curr, next, first = fuzz1;
+    for (let i = 0; i < lines; i++) {
+        line = !i ? [first] : [flip(first)];
+        curr = first = line[0];
+        for (let j = 0; j < cols; j++) {
+            next = flip(curr);
+            line.push(next);
+            curr = next;
+        }
+        noisebox.push(line);
+    }
+    return noisebox;
+};
+
+
+const writeNoise = () => {
+    let f = document.createDocumentFragment(),
+        [c1, c2] = [randChar(), randChar()],
+        _pre = document.createElement('pre'),
+        _code = document.createElement('code');
+
+    _code.innerText = noise(40, 80, c1, c2)
+        .map(row => row.join(''))
+        .join('\n');
+
+    _pre.appendChild(_code);
+    f.appendChild(_pre);
+    document.body.appendChild(f);
+};
+
+
+window.addEventListener('load', writeNoise);
+
+</script>
