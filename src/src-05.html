@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>body { background-color: #000; color: #566573;}</style>
+</head>
+<body>
+
+<script id="src">
+
+const gridline = (cols, tilesize, border) =>
+    border + border.repeat(cols * (tilesize + 1));
+
+    
+const tilerow_spaceL = (tilesize, spc, mark_idx) =>
+    !mark_idx ? '' : spc.repeat(mark_idx);
+
+
+const tilerow_spaceR = (tilesize, spc, mark_idx) => 
+    spc.repeat(tilesize - mark_idx - 1);
+
+
+const tilerow = function(tilesize, spc, mark, mark_idx) {
+    if ([0, 1].includes(tilesize)) {
+        return !tilesize ? '' : mark;
+    }
+    const left = tilerow_spaceL(tilesize, spc, mark_idx),
+          right = tilerow_spaceR(tilesize, spc, mark_idx);
+    return `${left}${mark}${right}`;
+};
+
+    
+const tilerow_flip = function(mark, marks, tilerow) {
+    if (tilerow.length < 2) {
+        return flipmark(mark, marks);
+    }
+    const tr = [...tilerow].reverse(),
+          flipped = tr.map(x => (x == mark) ? flipmark(mark, marks) : x);
+    return flipped.join('');
+};
+
+
+const row = function(mark_idx, cols, tilesize, border, mark, marks, spc) {
+    let row = border,
+        tr = tilerow(tilesize, spc, mark, mark_idx);
+    while (cols--) {
+        mark = tr.includes(marks[0]) ? marks[0] : marks[1];
+        row += tr + border;
+        tr = !!tilesize ? tilerow_flip(mark, marks, tr) : tr;
+    }
+    return row;
+};
+
+                                               
+const flipmark = (mark, marks) =>
+    (mark != marks[0]) ? marks[0] : marks[1];
+
+
+const resolve_mark = function(grid_row, tilerow, tilesize,
+                              mark, marks, mark_idx) {
+
+    // if we're ending a row, flip mark and do nothing else
+    if (tilerow === tilesize - 1) {
+        return [flipmark(mark, marks), mark_idx];
+
+    // if we're proceeding within an even-numbered row,
+    // increment mark index
+    } else if (!(grid_row % 2)) {
+        return [mark, mark_idx + 1];
+
+    // if we're proceeding within an odd-numbered row,
+    // decrement mark index
+    } else if (!!(grid_row % 2)) {
+        return [mark, mark_idx - 1];
+    }
+};
+
+
+const grid_init = function(cols, tilesize, border) {
+    const gridln = gridline(cols, tilesize, border);
+    return [[gridln], gridln];
+};
+
+
+const grid = function(rows, cols, tilesize, border, marks, spc) {
+    if ([rows, cols].includes(0)) return [];
+    
+    let [grid, gridln] = grid_init(cols, tilesize, border),
+        [mark, mark_idx] = [marks[0], 0];
+
+    for (let grid_row = 0; grid_row < rows; grid_row++) {
+        for (let tilerow = 0; tilerow < tilesize; tilerow++) {
+            grid.push(row(
+                mark_idx, cols, tilesize, border, mark, marks, spc
+                ));
+            [mark, mark_idx] = resolve_mark(
+                grid_row, tilerow, tilesize, mark, marks, mark_idx
+                );
+        grid.push(gridln);
+        }
+    }
+    return grid;
+};
+
+
+const randChar = () => {
+    let t = document.getElementById("src").innerText,
+        l = t.length,
+        c = t[Math.floor(Math.random() * l)];
+    return !['\n', ' '].includes(c) ? c : randChar();
+};
+
+    
+const d1 = [3, 20, 6, '┏', ['╲', '╱'], '╰'];
+// [6, 20, 6, '┓', ['╱', '╲'], '╯']
+
+
+const d2 = [3, 20, 6, randChar(), [randChar(), randChar()], randChar()];
+
+
+const _write = function() {
+    for (let d of [d1, d2]) {
+    let f = document.createDocumentFragment(),
+        _pre = document.createElement('pre'),
+        _code = document.createElement('code'),
+        g = grid(...d);
+    
+    _code.innerText = g.join('\n');
+    _pre.appendChild(_code);
+    _pre.id = 'frag';
+    f.appendChild(_pre);
+    document.body.appendChild(f);
+    }
+};
+
+
+window.addEventListener('load', _write);
+
+</script>
+
+</body>
+</html>
