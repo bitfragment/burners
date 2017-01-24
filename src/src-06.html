@@ -1,0 +1,35 @@
+<script id="src">
+
+const rotc = function(c, n, max) {
+    const cCode = c.charCodeAt(),
+          rotated = cCode + n;
+    return (rotated > max)
+        ? String.fromCharCode(n - (max - cCode))
+        : String.fromCharCode(rotated);
+};
+
+
+const rots = function(s, n, max) {
+    if (!s) return '';
+    return [...s].map(function(x) {
+            return /[A-Za-z]/.test(x) ? rotc(x, n, max) : x;
+        }).join('');
+};
+
+
+const _write = function() {
+    let t = document.getElementById("src").innerText,
+        f = document.createDocumentFragment(),
+        _pre = document.createElement('pre'),
+        _code = document.createElement('code');
+
+    _code.innerText = t.split('\n').map(x => rots(x, 10, 255)).join('\n');
+    _pre.appendChild(_code);
+    f.appendChild(_pre);
+    document.body.appendChild(f);
+};
+
+
+window.addEventListener('load', _write);
+
+</script>
