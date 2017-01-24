@@ -1,23 +1,14 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title></title>
-    <style>body { background-color: #000; color: #566573;}</style>
-</head>
-<body>
-
 <script id="src">
 
 const gridline = (cols, tilesize, border) =>
     border + border.repeat(cols * (tilesize + 1));
 
-    
+
 const tilerow_spaceL = (tilesize, spc, mark_idx) =>
     !mark_idx ? '' : spc.repeat(mark_idx);
 
 
-const tilerow_spaceR = (tilesize, spc, mark_idx) => 
+const tilerow_spaceR = (tilesize, spc, mark_idx) =>
     spc.repeat(tilesize - mark_idx - 1);
 
 
@@ -30,7 +21,7 @@ const tilerow = function(tilesize, spc, mark, mark_idx) {
     return `${left}${mark}${right}`;
 };
 
-    
+
 const tilerow_flip = function(mark, marks, tilerow) {
     if (tilerow.length < 2) {
         return flipmark(mark, marks);
@@ -52,7 +43,7 @@ const row = function(mark_idx, cols, tilesize, border, mark, marks, spc) {
     return row;
 };
 
-                                               
+
 const flipmark = (mark, marks) =>
     (mark != marks[0]) ? marks[0] : marks[1];
 
@@ -85,7 +76,7 @@ const grid_init = function(cols, tilesize, border) {
 
 const grid = function(rows, cols, tilesize, border, marks, spc) {
     if ([rows, cols].includes(0)) return [];
-    
+
     let [grid, gridln] = grid_init(cols, tilesize, border),
         [mark, mark_idx] = [marks[0], 0];
 
@@ -111,7 +102,7 @@ const randChar = () => {
     return !['\n', ' '].includes(c) ? c : randChar();
 };
 
-    
+
 const d1 = [3, 20, 6, '┏', ['╲', '╱'], '╰'];
 // [6, 20, 6, '┓', ['╱', '╲'], '╯']
 
@@ -125,7 +116,7 @@ const _write = function() {
         _pre = document.createElement('pre'),
         _code = document.createElement('code'),
         g = grid(...d);
-    
+
     _code.innerText = g.join('\n');
     _pre.appendChild(_code);
     _pre.id = 'frag';
@@ -138,6 +129,3 @@ const _write = function() {
 window.addEventListener('load', _write);
 
 </script>
-
-</body>
-</html>
