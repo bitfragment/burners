@@ -1,0 +1,29 @@
+<script id="src">
+
+const box = function(s, n) {
+    let l = s.length,
+        lines = [];
+    s = s.replace(/\n/g, '').replace(/\s{2,}/g, '');
+    for (let i = 0; i < l; i += n) {
+        lines.push(s.substring(i, i + n));
+    }
+    return lines.join('\n').trim();
+};
+
+
+const _write = function() {
+    let t = document.getElementById("src").innerText,
+        f = document.createDocumentFragment(),
+        _pre = document.createElement('pre'),
+        _code = document.createElement('code');
+
+    _code.innerText = box(t, 35);
+    _pre.appendChild(_code);
+    f.appendChild(_pre);
+    document.body.appendChild(f);
+};
+
+
+window.addEventListener('load', _write);
+
+</script>
