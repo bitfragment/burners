@@ -1,0 +1,40 @@
+<script id="src">
+
+const add = (a, b) => a + b;
+
+const sum = arr => arr.length ? arr.reduce(add) : 0;
+
+const sumChars = s =>
+    sum([...s]
+        .filter(c => /[A-Za-z]/.test(c))
+        .map(c => c.charCodeAt())
+        );
+
+const _decrypt = function(s, key) {
+    const len = key.length;
+    return s.split(' ')
+        .map(c => sumChars(c))
+        .map(i => key[i % len])
+        .join('');
+};
+
+const decrypt = s => _decrypt(s, ' abcdefghijklmnopqrstuvwxyz');
+
+const _write = function() {
+    const f     = document.createDocumentFragment(),
+          _pre  = document.createElement('pre'),
+          _code = document.createElement('code'),
+              t = document.getElementById('src').innerText;
+
+    _code.innerText = t.split('\n')
+        .map(line => decrypt(line))
+        .join('\n');
+
+    _pre.appendChild(_code);
+    f.appendChild(_pre);
+    document.body.appendChild(f);
+};
+
+window.addEventListener('load', _write);
+
+</script>
