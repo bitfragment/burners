@@ -1,0 +1,43 @@
+<script id="src">
+
+const randInt = n => Math.floor(Math.random() * n);
+
+const shuffle = function(arr) {
+    // Does not compare `arr` to return value, so no guarantees...
+    let _arr = arr.slice();
+    return arr.map(elt => _arr.splice(randInt(_arr.length), 1)[0]);
+};
+
+const shuffleInner = arr =>
+    arr.slice(0, 1)
+    .concat(shuffle(arr.slice(1, -1)))
+    .concat(arr.slice(-1));
+
+const solution = s =>
+    s.split(/\b/)
+    .map(chunk => isAlphaNum(chunk)
+        ? shuffleInner([...chunk]).join('')
+        : chunk
+        )
+    .join('');
+
+const _write = function() {
+    const f     = document.createDocumentFragment(),
+          _pre  = document.createElement('pre'),
+          _code = document.createElement('code'),
+              t = document.getElementById('src').innerText;
+
+    _code.innerText = t.split(/\b/)
+       .map(chunk => shuffleInner([...chunk]).join('')).join('');
+
+    _pre.appendChild(_code);
+    f.appendChild(_pre);
+    document.body.appendChild(f);
+};
+
+window.addEventListener('load', _write);
+
+</script>
+
+</body>
+</html>
