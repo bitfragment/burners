@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        html, body, .container {
+            height: 100%;
+        }
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+<script id="src">
+
+const randInt = (min, max) => Math.floor(Math.random() * max) + min;
+
+const randChar = s => s[randInt(0, s.length)];
+
+const randSrcChar = function() {
+    const t = document.getElementById("src").innerText,
+          c = randChar(t);
+    return !['\n', ' '].includes(c) ? c : randSrcChar();
+};
+
+const _write = function() {
+    const f = document.createDocumentFragment(),
+          container = document.createElement('div'),
+          _pre = document.createElement('pre'),
+          _code = document.createElement('code');
+    let s = '';
+    
+    for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 50; i++) {
+            s += randSrcChar() + ' ';
+        }
+        s += '\n';
+    }
+
+    container.setAttribute('class', 'container');
+    _code.innerText = s;
+    _pre.appendChild(_code);
+    container.appendChild(_pre);
+    f.appendChild(container);
+    document.body.appendChild(f);
+};
+
+
+window.addEventListener('load', _write);
+
+</script>
+
+</body>
+</html>
