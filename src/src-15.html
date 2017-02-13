@@ -8,7 +8,7 @@
             height: 100%;
         }
         body {
-            background: #000012; /* Get from charToHexCode(' ') */
+            background: #000000; /* Get from charToHexCode(' ') */
         }
         .container {
             display: flex;
@@ -21,14 +21,12 @@
 
 <script id="src">
 const charToHexCode = function(c) {
-    const offset = -20,
-          cc = c.charCodeAt(0) + offset,
+    const offset = Math.floor(Math.random() * 75),
+          cc = c.charCodeAt(0) * offset,
           ccpadarr = Array(Math.max(6 - String(cc).length + 1, 0)),
           ccpadstr = '#' + ccpadarr.join(0) + cc;
     return ccpadstr;
 };
-
-console.log(charToHexCode(' ')); // Use to set body background
 
 const _write = function() {
     const f = document.createDocumentFragment(),
@@ -42,8 +40,8 @@ const _write = function() {
           tlinesLen = tlines.length,
           tlinesLengths = tlines.map(elt => elt.length),
           tlinesLongest = Math.max(...tlinesLengths),
-          charBoxSize = 8,
-          charBoxPad = 2;
+          charBoxSize = 14,
+          charBoxPad = -2;
 
     container.setAttribute('class', 'container');
     canv.width   =  charBoxSize * tlinesLongest +
@@ -53,20 +51,14 @@ const _write = function() {
     canvCtx.font =  charBoxSize + "px monospace";
 
     let [x, y] = [charBoxSize, charBoxSize];
-    const myFillRect = () => canvCtx.fillRect(x - charBoxSize,
-                                              y - charBoxSize,
-                                              charBoxSize,
-                                              charBoxSize);
 
     for (const line of tlines.slice(1)) {
         for (const c of line) {
             canvCtx.fillStyle = charToHexCode(c);
-            myFillRect();
-            // canvCtx.fillText(c, x, y);
+            // myFillRect();
+            canvCtx.fillText(c, x, y);
             x += charBoxPad + charBoxSize;
         }
-        canvCtx.fillStyle = charToHexCode(line.slice(-1));
-        myFillRect();
         x = 0;
         y += charBoxPad + charBoxSize;
     }

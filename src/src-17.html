@@ -8,7 +8,7 @@
             height: 100%;
         }
         body {
-            background: #000012; /* Get from charToHexCode(' ') */
+            background: #000000;
         }
         .container {
             display: flex;
@@ -20,17 +20,19 @@
 <body>
 
 <script id="src">
-const charToHexCode = function(c) {
-    const offset = -20,
-          cc = c.charCodeAt(0) + offset,
+
+const randInt = (min, max) => Math.floor(Math.random() * max) + min;
+
+
+const charToHexCode = function(c, offset) {
+          cc = c.charCodeAt(0) * offset,
           ccpadarr = Array(Math.max(6 - String(cc).length + 1, 0)),
           ccpadstr = '#' + ccpadarr.join(0) + cc;
     return ccpadstr;
 };
 
-console.log(charToHexCode(' ')); // Use to set body background
 
-const _write = function() {
+const init = function() {
     const f = document.createDocumentFragment(),
           container = document.createElement('div'),
           canv = document.createElement('canvas'),
@@ -42,8 +44,8 @@ const _write = function() {
           tlinesLen = tlines.length,
           tlinesLengths = tlines.map(elt => elt.length),
           tlinesLongest = Math.max(...tlinesLengths),
-          charBoxSize = 8,
-          charBoxPad = 2;
+          charBoxSize = 14,
+          charBoxPad = -2;
 
     container.setAttribute('class', 'container');
     canv.width   =  charBoxSize * tlinesLongest +
@@ -52,31 +54,37 @@ const _write = function() {
                     charBoxPad  * tlinesLen;
     canvCtx.font =  charBoxSize + "px monospace";
 
-    let [x, y] = [charBoxSize, charBoxSize];
-    const myFillRect = () => canvCtx.fillRect(x - charBoxSize,
-                                              y - charBoxSize,
-                                              charBoxSize,
-                                              charBoxSize);
-
-    for (const line of tlines.slice(1)) {
-        for (const c of line) {
-            canvCtx.fillStyle = charToHexCode(c);
-            myFillRect();
-            // canvCtx.fillText(c, x, y);
-            x += charBoxPad + charBoxSize;
-        }
-        canvCtx.fillStyle = charToHexCode(line.slice(-1));
-        myFillRect();
-        x = 0;
-        y += charBoxPad + charBoxSize;
-    }
-
     container.appendChild(canv);
     f.appendChild(container);
     document.body.appendChild(f);
+
+
+    const _write = function() {
+        let [x, y] = [0, 0];
+        for (const line of tlines.slice(1)) {
+            for (const c of line) {
+                canvCtx.fillStyle = charToHexCode(c, randInt(1, 1000));
+                canvCtx.fillText(c, x + randInt(1, 25), y + randInt(1, 25));
+                x += charBoxPad + charBoxSize;
+            }
+            x = 0;
+            y += charBoxPad + charBoxSize;
+        }
+        requestAnimationFrame(draw);
+      };
+
+    _write();
+
+    function draw() {
+        setTimeout(function() {
+            canvCtx.clearRect(0, 0, canv.width, canv.height);
+            _write();
+        }, 200);
+    }
 };
 
-window.addEventListener('load', _write);
+
+window.addEventListener('load', init);
 </script>
 
 </body>
