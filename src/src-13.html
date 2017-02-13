@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        html, body, .container {
+            height: 100%;
+        }
+        body {
+            background: #000012; /* Get from charToHexCode(' ') */
+        }
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+<script id="src">
+const charToHexCode = function(c) {
+    const cc = c.charCodeAt(0) - 20,
+          ccpadarr = Array(Math.max(6 - String(cc).length + 1, 0)),
+          ccpadstr = '#' + ccpadarr.join(0) + cc;
+    return ccpadstr;
+};
+
+console.log(charToHexCode(' ')); // Use to set body background
+
+const _write = function() {
+    const f = document.createDocumentFragment(),
+          container = document.createElement('div'),
+          canv = document.createElement('canvas'),
+          canvCtx = canv.getContext('2d'),
+          _pre = document.createElement('pre'),
+          _code = document.createElement('code'),
+          t = document.getElementById('src').innerText,
+          tlines = t.split('\n'),
+          tlinesLen = tlines.length,
+          tlinesLengths = tlines.map(elt => elt.length),
+          tlinesLongest = Math.max(...tlinesLengths),
+          charBoxSize = 8,
+          charBoxPad = 2;
+
+    container.setAttribute('class', 'container');
+    canv.width   =  charBoxSize * tlinesLongest +
+                    charBoxPad  * tlinesLongest;
+    canv.height  =  charBoxSize * tlinesLen +
+                    charBoxPad  * tlinesLen;
+    canvCtx.font =  charBoxSize + "px monospace";
+
+    let [x, y] = [charBoxSize, charBoxSize];
+    const myFillRect = () => canvCtx.fillRect(x - charBoxSize,
+                                              y - charBoxSize,
+                                              charBoxSize,
+                                              charBoxSize);
+
+    for (const line of tlines.slice(1)) {
+        for (const c of line) {
+            canvCtx.fillStyle = charToHexCode(c);
+            myFillRect();
+            // canvCtx.fillText(c, x, y);
+            x += charBoxPad + charBoxSize;
+        }
+        canvCtx.fillStyle = charToHexCode(line.slice(-1));
+        myFillRect();
+        x = 0;
+        y += charBoxPad + charBoxSize;
+    }
+
+    container.appendChild(canv);
+    f.appendChild(container);
+    document.body.appendChild(f);
+};
+
+window.addEventListener('load', _write);
+</script>
+
+</body>
+</html>
