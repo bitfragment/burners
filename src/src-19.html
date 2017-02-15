@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        html, body, .container {
+            height: 100%;
+        }
+        body {
+            background: #000000;
+        }
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+<script id="src">
+
+const add = (a, b) => a + b;
+const mult = (a, b) => a * b;
+const sum  = arr => arr.length ? arr.reduce(add) : 0;
+const prod = arr => arr.length ? arr.reduce(mult) : 0;
+const charCodes = s => [...s].map(elt => elt.charCodeAt(0));
+const sumCharCodes = s => sum(charCodes(s));
+const prodCharCodes = s => prod(charCodes(s));
+const absFirstRest = s =>
+    Math.abs(s.charCodeAt(0) - sumCharCodes(s.slice(1)));
+
+const hexFmtMod256 = function(n) {
+    const _n = n % 256;
+    if (_n > 9) return _n.toString(16);
+    return '0' + _n.toString(16).slice(-2);
+};
+
+const hexCompose = s =>
+    [sumCharCodes(s), prodCharCodes(s), absFirstRest(s)]
+    .map(elt => hexFmtMod256(elt))
+    .reduce(add);
+
+const stringColor = (s, emptyColor) =>
+    (!s)
+    ? emptyColor
+    : '#' + hexCompose(s);
+
+const _write = function() {
+    const f = document.createDocumentFragment(),
+          container = document.createElement('div'),
+          canv = document.createElement('canvas'),
+          canvCtx = canv.getContext('2d'),
+          t = document.getElementById('src').innerText,
+          tlines = t.split('\n'),
+          tlinesLen = tlines.length,
+          tlinesLengths = tlines.map(elt => elt.length),
+          tlinesLongest = Math.max(...tlinesLengths),
+          charBoxSize = 12,
+          charBoxPad = 0,
+          space = charBoxPad + charBoxSize;
+
+    container.setAttribute('class', 'container');
+    canv.width   =  charBoxSize * tlinesLongest +
+                    charBoxPad  * tlinesLongest;
+    canv.height  =  charBoxSize * tlinesLen +
+                    charBoxPad  * tlinesLen;
+    canvCtx.font =  charBoxSize + "px monospace";
+
+    let [x, y] = [0, 0];
+
+    for (const line of tlines.slice(1)) {
+        for (const word of line.split(/\b/)) {
+            let wl = word.length;
+            canvCtx.fillStyle = stringColor(word);
+            canvCtx.fillText(word, x, y);
+            x += window.innerWidth % word.charCodeAt(0);
+            if (x > window.innerWidth) x = word.charCodeAt(0);
+        }
+        x = 0;
+        y += space;
+    }
+
+    container.appendChild(canv);
+    f.appendChild(container);
+    document.body.appendChild(f);
+};
+
+window.addEventListener('load', _write);
+</script>
+
+</body>
+</html>
