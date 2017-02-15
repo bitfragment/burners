@@ -69,9 +69,17 @@ const _write = function() {
                     charBoxPad  * tlinesLen;
     canvCtx.font =  charBoxSize + "px monospace";
 
-    let [x, y] = [charBoxSize, charBoxSize];
+    let [x, y] = [0, charBoxSize];
 
-    for (const line of tlines.slice(1)) {
+    canvCtx.fillStyle = stringColor(tlines[2]);
+    for (const c of tlines[2]) {
+        canvCtx.fillText(c, x, y);
+        x += charBoxPad + charBoxSize;
+    }
+    x = 0;
+    y += charBoxPad + charBoxSize;
+
+    for (const line of tlines.slice(3)) {
         for (const c of line) {
             canvCtx.fillStyle = stringColor(c);
             canvCtx.fillText(c, x, y);
