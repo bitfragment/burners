@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        html, body, .container {
+            height: 100%;
+        }
+        body {
+            background: #000012; /* Get from charToHexCode(' ') */
+        }
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+<script id="src">
+const randInt = (min, max) => Math.floor(Math.random() * max) + min;
+
+const charToHexCode = function(c) {
+    const offset = -20,
+          cc = c.charCodeAt(0) + offset,
+          ccpadarr = Array(Math.max(6 - String(cc).length + 1, 0)),
+          ccpadstr = '#' + ccpadarr.join(0) + cc;
+    return ccpadstr;
+};
+
+console.log(charToHexCode(' ')); // Used to set body background
+
+const charToWidth = (c, maxWidth) =>
+    maxWidth / 2 + (c.charCodeAt(0) % maxWidth || 1);
+
+console.log(charToWidth('a', 8));
+
+const _write = function() {
+    const f             = document.createDocumentFragment()
+        , container     = document.createElement('div')
+        , canv          = document.createElement('canvas')
+        , canvCtx       = canv.getContext('2d')
+        , _pre          = document.createElement('pre')
+        , _code         = document.createElement('code')
+        , t             = document.getElementById('src').innerText
+        , tlines        = t.split('\n')
+        , tlinesLen     = tlines.length
+        , tlinesLengths = tlines.map(elt => elt.length)
+        , tlinesLongest = Math.max(...tlinesLengths)
+        , charBoxMax    = 8
+        , charBoxPad    = 1
+        ;
+
+    container.setAttribute('class', 'container');
+    canv.width   =  charBoxMax * tlinesLongest +
+                    charBoxPad * tlinesLongest;
+    canv.height  =  charBoxMax * tlinesLen +
+                    charBoxPad * tlinesLen;
+    canvCtx.font =  charBoxMax + "px monospace";
+
+    let charBoxWidth = 0;
+    let [x, y] = [charBoxWidth, charBoxMax];
+
+    const myFillRect = charBoxWidth =>
+        canvCtx.fillRect(
+            x - charBoxWidth,
+            y - charBoxMax,
+            charBoxWidth,
+            charBoxMax
+        );
+
+    for (const line of tlines.slice(1)) {
+        for (const c of line) {
+            canvCtx.fillStyle = charToHexCode(c);
+            charBoxWidth = charToWidth(c, charBoxMax);
+            myFillRect(charBoxWidth);
+            x += charBoxPad + charBoxWidth;
+        }
+        let lastChar = line.slice(-1);
+        canvCtx.fillStyle = charToHexCode(lastChar);
+        charBoxWidth = charToWidth(lastChar);
+        myFillRect(charBoxWidth);
+        x = 0;
+        y += charBoxPad + charBoxMax;
+    }
+
+    container.appendChild(canv);
+    f.appendChild(container);
+    document.body.appendChild(f);
+};
+
+window.addEventListener('load', _write);
+</script>
+
+</body>
+</html>
