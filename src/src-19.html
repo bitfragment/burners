@@ -37,12 +37,12 @@ const hexFmtMod256 = function(n) {
     return '0' + _n.toString(16).slice(-2);
 };
 
-const hexCompose = s =>
+const hexCompose = (s) =>
     [sumCharCodes(s), prodCharCodes(s), absFirstRest(s)]
     .map(elt => hexFmtMod256(elt))
     .reduce(add);
 
-const stringColor = (s, emptyColor) =>
+const stringColor = (s, emptyColor='000000') =>
     (!s)
     ? emptyColor
     : '#' + hexCompose(s);
@@ -52,14 +52,15 @@ const _write = function() {
           container = document.createElement('div'),
           canv = document.createElement('canvas'),
           canvCtx = canv.getContext('2d'),
+          _pre = document.createElement('pre'),
+          _code = document.createElement('code'),
           t = document.getElementById('src').innerText,
           tlines = t.split('\n'),
           tlinesLen = tlines.length,
           tlinesLengths = tlines.map(elt => elt.length),
           tlinesLongest = Math.max(...tlinesLengths),
           charBoxSize = 12,
-          charBoxPad = 0,
-          space = charBoxPad + charBoxSize;
+          charBoxPad = -1;
 
     container.setAttribute('class', 'container');
     canv.width   =  charBoxSize * tlinesLongest +
@@ -68,18 +69,16 @@ const _write = function() {
                     charBoxPad  * tlinesLen;
     canvCtx.font =  charBoxSize + "px monospace";
 
-    let [x, y] = [0, 0];
+    let [x, y] = [charBoxSize, charBoxSize];
 
     for (const line of tlines.slice(1)) {
-        for (const word of line.split(/\b/)) {
-            let wl = word.length;
-            canvCtx.fillStyle = stringColor(word);
-            canvCtx.fillText(word, x, y);
-            x += window.innerWidth % word.charCodeAt(0);
-            if (x > window.innerWidth) x = word.charCodeAt(0);
+        for (const c of line) {
+            canvCtx.fillStyle = stringColor(c);
+            canvCtx.fillText(c, x, y);
+            x += charBoxPad + charBoxSize;
         }
         x = 0;
-        y += space;
+        y += charBoxPad + charBoxSize;
     }
 
     container.appendChild(canv);
