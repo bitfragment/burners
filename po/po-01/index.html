@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        html, body, .cont {
+            height: 99%;
+        }
+        body {
+            background: #0080FF;
+            color: #66CCFF;
+        }
+        .cont {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .text {
+            font-family: monospace;
+            font-size: 120%;
+            white-space: pre-wrap;
+            margin-left: 10px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<script id="src">
+
+const charCodes = str => [...str].map(elt => elt.charCodeAt(0));
+
+const init = function() {
+    const frag = document.createDocumentFragment();
+    const cont = document.createElement('div');
+    const envp = document.createElement('div');
+    const text = document.createElement('div');
+    const canv = document.createElement('canvas');
+    const ctx  = canv.getContext('2d');
+
+    cont.setAttribute('class', 'cont');
+    text.setAttribute('class', 'text');
+
+    envp.appendChild(text);
+    envp.appendChild(canv);
+    cont.appendChild(envp);
+    frag.appendChild(cont);
+    document.body.appendChild(frag);
+
+    const str = "of the volunted spect\n" +
+                "who had never known a chair\n" +
+                "but white cravat in glasses\n" +
+                "waving the calm of his travels\n" +
+                "at the ardonable";
+
+    text.innerText = str;
+    const lw = 1;
+    const skip = 3;
+    let cs = charCodes(str);
+    console.log(cs);
+    canv.width  = cs.length * (lw + skip);
+    canv.height = Math.max(...cs);
+
+    const set = function() {
+        let x = 0;
+        let y;
+        for (const c of cs) {
+            y = (canv.height - c) / 2;
+            ctx.moveTo(x, y);
+            ctx.lineTo(x, y + c);
+            ctx.lineWidth = lw;
+            ctx.stroke();
+            x += skip;
+        }
+    };
+    ctx.beginPath();
+    set();
+
+};
+
+window.addEventListener('load', init);
+
+</script>
+
+</body>
+</html>
