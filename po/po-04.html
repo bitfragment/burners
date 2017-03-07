@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        html, body, .cont {
+            height: 99%;
+        }
+        body {
+            background: #000000;
+            color: #848f95;
+        }
+        .cont {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .text {
+            font-family: monospace;
+            font-size: 120%;
+            white-space: pre-wrap;
+            margin-left: 10px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<script id="src">
+
+const charCodes = str => [...str].map(elt => elt.charCodeAt(0));
+
+const chunkArr = function(arr, size) {
+    const _arr = arr.slice();
+    let chunked = [];
+    while (_arr.length > 0) {
+        chunked.push(_arr.splice(0, size));
+    }
+    return chunked;
+};
+  
+const init = function() {
+    const frag = document.createDocumentFragment();
+    const cont = document.createElement('div');
+    const envp = document.createElement('div');
+    const text = document.createElement('div');
+    const canv = document.createElement('canvas');
+    const ctx  = canv.getContext('2d');
+
+    cont.setAttribute('class', 'cont');
+    text.setAttribute('class', 'text');
+
+    envp.appendChild(text);
+    envp.appendChild(canv);
+    cont.appendChild(envp);
+    frag.appendChild(cont);
+    document.body.appendChild(frag);
+
+    const str = "was french but a nothing\n" +
+                "day rate of haste\n" +
+                "morrow in martel forest\n" +
+                "part warfare, part land\n" +
+                "\n" +
+                "saturday prince anglo\n" +
+                "forgot châtellerault\n" +
+                "and consisted\n" +
+                "\n" +
+                "six in haye delaye\n" +
+                "fourteenth opportunity\n" +
+                "whole arms head of whose\n" +
+                "upon rapid south";
+
+    text.innerText = str;
+    const cs = charCodes(str);
+    const csChunked = chunkArr(cs, 6);
+    console.log(csChunked);
+    const maxCs = Math.max(...cs);
+    canv.width  = maxCs * 2;
+    canv.height = maxCs * 2;
+    ctx.strokeStyle = '#848f95';
+
+    const set = function() {
+        let mvx, mvy, cpx, cpy, x, y;
+        for (const c of csChunked) {
+            let i = 6 - c.length;
+            while (i--) c.push(0);
+            [mvx, mvy] = [c[0], c[1]];
+            [cpx, cpy, x, y] = [c[2], c[3], c[4], c[5]].map(elt => 2 * elt);
+            ctx.beginPath();
+            ctx.moveTo(mvx, mvy);
+            ctx.quadraticCurveTo(cpx, cpy, x, y);
+            ctx.stroke();
+        }
+    };
+    set();
+
+};
+
+window.addEventListener('load', init);
+
+</script>
+
+</body>
+</html>
