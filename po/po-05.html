@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        html, body, .cont {
+            height: 99%;
+        }
+        body {
+            background: #000000;
+            color: #848f95;
+        }
+        .cont {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .text {
+            font-family: monospace;
+            font-size: 120%;
+            white-space: pre-wrap;
+            margin-left: 10px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<script id="src">
+
+const charCodes = str => [...str].map(elt => elt.charCodeAt(0));
+
+const chunkArr = function(arr, size) {
+    const _arr = arr.slice();
+    let chunked = [];
+    while (_arr.length > 0) {
+        chunked.push(_arr.splice(0, size));
+    }
+    return chunked;
+};
+  
+const init = function() {
+    const frag = document.createDocumentFragment();
+    const cont = document.createElement('div');
+    const envp = document.createElement('div');
+    const text = document.createElement('div');
+    const canv = document.createElement('canvas');
+    const ctx  = canv.getContext('2d');
+
+    cont.setAttribute('class', 'cont');
+    text.setAttribute('class', 'text');
+
+    envp.appendChild(canv);
+    envp.appendChild(text);
+    cont.appendChild(envp);
+    frag.appendChild(cont);
+    document.body.appendChild(frag);
+
+    const str = "to the host already and\n" +
+                "without standard faculties\n" +
+                "lowly but sound\n" +
+                "went the necessary thought\n" +
+                "ornamental yet early\n" +
+                "\n" +
+                "quot conflicting aberrations\n" +
+                "essentially";
+
+    text.innerText = str;
+    const cs = charCodes(str);
+    const csChunked = chunkArr(cs, 8);
+    console.log(csChunked);
+    const maxCs = Math.max(...cs);
+    canv.width  = maxCs * 2;
+    canv.height = maxCs * 2;
+    ctx.strokeStyle = '#6da5ff';
+
+    const set = function() {
+        let mvx, mvy, cp1x, cp1y, cp2x, cp2y, x, y;
+        for (const c of csChunked) {
+            let i = 8 - c.length;
+            while (i--) c.push(0);
+            [mvx, mvy] = [c[0], c[1]];
+            [cp1x, cp1y, cp2x, cp2y, x, y] = [c[2], c[3], c[4], c[5], c[6], c[7]].map(elt => 2 * elt);
+            ctx.beginPath();
+            ctx.moveTo(mvx, mvy);
+            ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
+            ctx.stroke();
+        }
+    };
+    set();
+
+};
+
+window.addEventListener('load', init);
+
+</script>
+
+</body>
+</html>
