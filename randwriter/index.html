@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        body { font-family: monospace; }
+    </style>
+</head>
+<body>
+
+<script id="src">
+
+const randint = (min, max) => Math.floor(Math.random() * max) + min;
+
+const kbd = ["qwertyuiop", "asdfghjkl;", "zxcvbnm,.?", "          "];
+
+const getc = (key, kbd) => kbd[key[1]][key[0]];
+
+const init = function() {
+    const canv = document.createElement('canvas'),
+          canvCtx = canv.getContext('2d'),
+          charBoxSize = 18,
+          charBoxPad = -6;
+
+    canv.width = window.innerWidth - 50;
+    canv.height = window.innerHeight - 50;
+    canvCtx.font =  charBoxSize + "px monospace";
+    document.body.appendChild(canv);
+
+    let ks = Math.round(
+        (canv.width  / (charBoxSize + charBoxPad)) *
+        ((canv.height / (charBoxSize + charBoxPad))/ 2)
+        );
+
+    let [x, y] = [50, 50];
+
+    const _write = function() {
+        if (ks > 0) {
+            let key = [randint(0, 10), randint(0, 4)],
+                char = getc(key, kbd);
+            canvCtx.fillText(char, x, y);
+            x += charBoxPad + charBoxSize;
+            if (x > canv.width - 50) {
+                x = 50;
+                y += charBoxSize + 2;
+            }
+        }
+        requestAnimationFrame(draw);
+        ks--;
+      };
+
+    _write();
+
+    function draw() {
+        setTimeout(function() {
+            _write();
+        }, randint(0, 300));
+    }
+};
+
+window.addEventListener('load', init);
+
+</script>
+
+</body>
+</html>
