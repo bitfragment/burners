@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        html, body, .cont {
+            height: 99%;
+        }
+        body {
+            background: #ffffff;
+            color: #000000;
+        }
+        .cont {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .text {
+            font-family: monospace;
+            font-size: 120%;
+            white-space: pre-wrap;
+            margin-left: 10px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<script id="src">
+
+const charCodes = str => [...str].map(elt => elt.charCodeAt(0));
+
+const chunkArr = function(arr, size) {
+    const _arr = arr.slice();
+    let chunked = [];
+    while (_arr.length > 0) {
+        chunked.push(_arr.splice(0, size));
+    }
+    return chunked;
+};
+  
+const init = function() {
+    const frag = document.createDocumentFragment();
+    const cont = document.createElement('div');
+    const envp = document.createElement('div');
+    const text = document.createElement('div');
+    const canv = document.createElement('canvas');
+    const ctx  = canv.getContext('2d');
+
+    cont.setAttribute('class', 'cont');
+    text.setAttribute('class', 'text');
+
+    envp.appendChild(text);
+    envp.appendChild(canv);
+    cont.appendChild(envp);
+    frag.appendChild(cont);
+    document.body.appendChild(frag);
+
+    const str = "opposed in red peace amity\n" +
+                "forever lafayette lafayette\n" +
+                "the what me their america";
+
+    text.innerText = str;
+    const cs = charCodes(str);
+    const csChunked = chunkArr(cs, 5);
+    console.log(csChunked);
+    const maxCs = Math.max(...cs);
+    canv.width  = maxCs * 2;
+    canv.height = maxCs * 2;
+    ctx.strokeStyle = '#6da5ff';
+
+    const set = function() {
+        const c2r = c => c * (Math.PI / 180);
+        let angle, x, y, w, h;
+        for (const c of csChunked) {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(0.5, 0.5);
+            let i = 5 - c.length;
+            while (i--) c.push(0);
+            angle = c2r(c[0]);
+            [x, y] = [c[1], c[2]];
+            [w, h] = [c[3], c[4]];
+            ctx.translate(x + 0.5 * w, y + 0.5 * h);
+            ctx.rotate(angle);
+            ctx.strokeRect(-0.5 * w, -0.5 * h, w, h);
+        }
+    };
+    set();
+
+};
+
+window.addEventListener('load', init);
+
+</script>
+
+</body>
+</html>
