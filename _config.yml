@@ -1,0 +1,2 @@
+# File stream/2017.md causes generic Jekyll build error.
+exclude: ["stream"]
