@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title></title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.23/p5.min.js"></script>
+</head>
+<body>
+<script>
+function setup() {
+    createCanvas(windowWidth, windowHeight);
+    noLoop();
+}
+
+function sweep(x, y, inc) {
+    var step = 2,
+        xlimit = x + inc,
+        lastX = x,
+        y,
+        lastY = y,
+        z;
+
+    for (x; x <= xlimit; x += step) {
+        z = y + random(inc);
+        line(x, z, lastX, lastY);
+        lastX = x;
+        lastY = z;
+    }
+}
+
+function hatch(x, y, inc) {
+    var i = random(1, 7),
+        n = function() { return random(inc / 6); };
+    while (i > 0) {
+        line(x + n(), y + n(), x + n(), y + n());
+        i--;
+    }
+}
+
+function drawChar(x, y, inc) {
+    sweep(x, y, inc);
+    hatch(x, y, inc);
+}
+
+function draw() {
+    var border = width / 5,
+        inc = width / 15;
+    for (var x = border - inc; x <= width - border; x += inc) {
+        for (var y = border - inc; y <= height - border; y += inc) {
+            drawChar(x, y, inc);
+        }
+    }
+}
+</script>
+</body>
+</html>
